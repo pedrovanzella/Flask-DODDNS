@@ -3,5 +3,7 @@ Flask-HTTPAuth==2.3.0
 Jinja2==2.7.3
 MarkupSafe==0.23
 Werkzeug==0.9.6
+dopy==0.3.0
 itsdangerous==0.24
+requests==2.5.1
 wsgiref==0.1.2
