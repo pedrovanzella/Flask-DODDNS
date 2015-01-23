@@ -7,12 +7,17 @@ from dopy.manager import DoManager
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 
+# IMPORTANT CHANGE THIS
+USERNAME = "user"
+PASSWORD = "password"
+API_TOKEN = "token"
+DOMAIN = "sub.domain.com"
+
 users = {
-    # IMPORTANT CHANGE THIS USERNAME AND PASSWORD
-    "user": "password"
+    USERNAME: PASSWORD
 }
 
-do = DoManager(None, 'api_token', api_version=2)
+do = DoManager(None, API_TOKEN, api_version=2)
 
 
 @auth.get_password
@@ -22,10 +27,18 @@ def get_pw(username):
     return None
 
 
+def find_a_record_id(domain):
+    return 1
+
+
 @app.route("/<ip>")
 @auth.login_required
 def update_ip(ip):
     return "Updating IP %s" % ip
+    domain = do.all_domain_records(DOMAIN)
+    a_record_id = find_a_record_id(domain)
+    # Currently doesn't work because DO won't let me change a record's IP
+    do.edit_domain_record(DOMAIN, a_record_id, "A", ip)
 
 
 if __name__ == "__main__":
