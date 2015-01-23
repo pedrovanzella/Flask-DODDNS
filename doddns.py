@@ -28,7 +28,9 @@ def get_pw(username):
 
 
 def find_a_record_id(domain):
-    return 1
+    for record in domain:
+        if record['type'] == "A":
+            return record["id"]
 
 
 @app.route("/<ip>")
