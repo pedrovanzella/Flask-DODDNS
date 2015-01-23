@@ -21,8 +21,8 @@ def get_pw(username):
 
 @app.route("/<ip>")
 @auth.login_required
-def update_ip():
-    return "Hello, World"
+def update_ip(ip):
+    return "Updating IP %s" % ip
 
 
 if __name__ == "__main__":
