@@ -25,57 +25,23 @@ def get_pw(username):
     return None
 
 
-# Taken from dopy https://github.com/devo-ps/dopy/blob/master/dopy/manager.py
-def request(self, path, params={}, method='GET'):
-    if not path.startswith('/'):
-        path = '/' + path
-        url = "https://api.digitalocean.com/v2" + path
-
+def get(url):
+    url = 'https://api.digitalocean.com/v2' + url
     headers = {'Authorization': "Bearer %s" % API_TOKEN}
-    resp = self.request_v2(url, params=params, headers=headers, method=method)
+    resp = requests.get(url, headers=headers, timeout=60)
+    return resp.json()
 
-    return resp
 
-
-def request_v2(self, url, headers={}, params={}, method='GET'):
-    try:
-        if method == 'POST':
-            resp = requests.post(url, params=params, headers=headers, timeout=60)
-            json = resp.json()
-        elif method == 'DELETE':
-            resp = requests.delete(url, headers=headers, timeout=60)
-            json = {'status': resp.status_code }
-        elif method == 'PUT':
-            resp = requests.put(url, headers=headers, params=params, timeout=60)
-            json = resp.json()
-        elif method == 'GET':
-            resp = requests.get(url, headers=headers, params=params, timeout=60)
-            json = resp.json()
-        else:
-            print 'Unsupported method %s' % method
-
-    except ValueError:  # requests.models.json.JSONDecodeError
-        raise ValueError("The API server doesn't respond with a valid json")
-    except requests.RequestException as e:  # errors from requests
-        raise RuntimeError(e)
-
-        if resp.status_code != requests.codes.ok:
-            if json:
-                if 'error_message' in json:
-                    print json['message']
-                elif 'message' in json:
-                    print json['message']
-            # The JSON reponse is bad
-            resp.raise_for_status()
-
-        if json.get('id') == 'not_found':
-            print json['message']
-
-        return json
+def put(url, params={}):
+    url = 'https://api.digitalocean.com/v2' + url
+    headers = {'Authorization': "Bearer %s" % API_TOKEN}
+    resp = requests.put(url, headers=headers, params=params, timeout=60)
+    return resp.json()
 
 
 def all_records(domain):
-    return ""
+    json = get('/domains/%s/records/' % DOMAIN)
+    return json['domain_records']
 
 
 def find_a_record_id(records):
@@ -85,7 +51,9 @@ def find_a_record_id(records):
 
 
 def edit_record(domain, record_id, ip):
-    pass
+    params = {}
+    params['data'] = ip
+    put('/domains/%s/records/%s' % (domain, record_id), params=params)
 
 
 @app.route("/<ip>")
