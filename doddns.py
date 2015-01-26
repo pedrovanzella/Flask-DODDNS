@@ -59,11 +59,10 @@ def edit_record(domain, record_id, ip):
 @app.route("/<ip>")
 @auth.login_required
 def update_ip(ip):
-    return "Updating IP %s" % ip
     records = all_records(DOMAIN)
     record = find_a_record_id(records)
-    # Currently doesn't work because DO won't let me change a record's IP
     edit_record(DOMAIN, record, ip)
+    return "Updated IP %s" % ip
 
 
 if __name__ == "__main__":
