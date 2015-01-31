@@ -53,7 +53,7 @@ def find_a_record_id(records):
 def edit_record(domain, record_id, ip):
     params = {}
     params['type'] = "A"
-    params['name'] = DOMAIN
+    params['name'] = "@"
     params['data'] = ip
     put('/domains/%s/records/%s' % (domain, record_id), params=params)
 
